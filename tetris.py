@@ -10,22 +10,22 @@ class Game:
 	def __init__(self):
 
 		self.screen = pygame.display.set_mode([400, 600])  #
-		self.x, self.y = 150, 0  #
+		# self.x, self.y = 150, 0  #
 		self.score = 0  #
 		self.level = 1  #
 		self.speed = 'speed'  #
 		self.paused = False  # bool
 
-		self.shape_i = Shape(self.screen, pygame.Color(0, 255, 0), ((100, 0), (200, 0), (200, 25), (100, 25)))  #
-		self.shape_j = Shape(self.screen, pygame.Color(255, 255, 0), ((100, 0), (125, 0), (125, 25), (175, 25), (175, 50), (100, 50)))  #
-		self.shape_l = Shape(self.screen, pygame.Color(0, 0, 255), ((100, 25), (150, 25), (150, 0), (175, 0), (175, 50), (100, 50)))  #
-		self.shape_o = Shape(self.screen, pygame.Color(0, 255, 255), ((125, 0), (175, 0), (175, 50), (125, 50)))  #
-		self.shape_s = Shape(self.screen, pygame.Color(120, 30, 60), ((100, 25), (125, 25), (125, 0), (175, 0), (175, 25), (150, 25), (150, 50), (100, 50)))  #
-		self.shape_t = Shape(self.screen, pygame.Color(255, 0, 0), ((100, 0), (175, 0), (175, 25), (150, 25), (150, 50), (125, 50), (125, 25), (100, 25)))  #
-		self.shape_z = Shape(self.screen, pygame.Color(60, 30, 120), ((100, 0), (150, 0), (150, 25), (175, 25), (175, 50), (125, 50), (125, 25), (100, 25)))  #
+		self.shape_i = Shape(self.screen, pygame.Color(0, 255, 0), ((100, 0), (125, 0), (150, 0), (175, 0)))#((100, 0), (200, 0), (200, 25), (100, 25)))  #
+		self.shape_j = Shape(self.screen, pygame.Color(255, 255, 0), ((100, 0), (100, 25), (125, 25), (150, 25)))#((100, 0), (125, 0), (125, 25), (175, 25), (175, 50), (100, 50)))  #
+		self.shape_l = Shape(self.screen, pygame.Color(0, 0, 255), ((100, 25), (125, 25), (150, 25), (150, 0)))#((100, 25), (150, 25), (150, 0), (175, 0), (175, 50), (100, 50)))  #
+		self.shape_o = Shape(self.screen, pygame.Color(0, 255, 255), ((125, 0), (150, 0), (125, 25), (150, 25)))#((125, 0), (175, 0), (175, 50), (125, 50)))  #
+		self.shape_s = Shape(self.screen, pygame.Color(120, 30, 60), ((100, 25), (125, 25), (125, 0), (150, 0)))#((100, 25), (125, 25), (125, 0), (175, 0), (175, 25), (150, 25), (150, 50), (100, 50)))  #
+		self.shape_t = Shape(self.screen, pygame.Color(255, 0, 0), ((100, 0), (125, 0), (150, 0), (125, 25)))#((100, 0), (175, 0), (175, 25), (150, 25), (150, 50), (125, 50), (125, 25), (100, 25)))  #
+		self.shape_z = Shape(self.screen, pygame.Color(60, 30, 120), ((100, 0), (125, 0), (125, 25), (150, 25)))#((100, 0), (150, 0), (150, 25), (175, 25), (175, 50), (125, 50), (125, 25), (100, 25)))  #
 		
 		self.shapes = [self.shape_i, self.shape_j, self.shape_l, self.shape_o, self.shape_s, self.shape_t, self.shape_z]
-		self.foo = [row for row in range(0, 600, 25)]  #
+		self.foo = [[0 for j in range(0, 12)] for i in range(0, 24)] #
 
 		self.current_Shape = New_Shape(self.shapes)
 		self.next_Shape = New_Shape(self.shapes)
@@ -88,25 +88,35 @@ def Do_Stuff_With_Input(Game):
 			if event.key == K_UP:
 				Game.current_Shape = Game.next_Shape
 				Game.next_Shape = New_Shape(Game.shapes)
-				pass
 			if event.key == K_LEFT:
 				if not Collision_Test(Game.current_Shape.pointlist, 0, 0):
 					Move_Shape(Game, 0, -25)
 			if event.key == K_RIGHT:
-				if not Collision_Test(Game.current_Shape.pointlist, 0, 300):
+				if not Collision_Test(Game.current_Shape.pointlist, 0, 275):
 					Move_Shape(Game, 0, 25)
 			if event.key == K_DOWN:
-				if not Collision_Test(Game.current_Shape.pointlist, 1, 600):
+				if not Collision_Test(Game.current_Shape.pointlist, 1, 525):
 					Move_Shape(Game, 1, 25)
 
 
-def Draw_Foo():
-	for row in foo:
-		for slot in row:
-			pygame.draw.rect(screen, pygame.Color(r, g, b), (slot, row, 25, 25))
-		pass
-	pass
+def Draw_Foo(screen, foo):
+	# for row in foo:
+	# 	for slot in row:
+	# 		if slot:
+	# 			pygame.draw.rect(Game.screen, color, (slot, row, 25, 25))
+	for row in range(0, len(foo)):
+	    for slot in range(0, len(foo[row])):
+	        if not foo[row][slot] == 0:
+	        	#pygame.draw.polygon(screen, foo[row][slot], Tetris_Game.current_Shape.pointlist)
+	        	pygame.draw.rect(screen, foo[row][slot], ((slot)*25, (row+1)*25, 25, 25))
+	            #print('row: {}, slot: {}, col: {}'.format(row, slot, foo[row][slot]))
+          		#print('row: {}, slot: {}, col: {}'.format(row, slot, row[slot]))
 
+
+def Update_Foo(foo, coords, color):
+	for coord in coords:
+		print(coord)
+		foo[coord[1]/25-1][coord[0]/25] = color
 
 def New_Shape(shapes):
 	ran = randint(0, 6)
@@ -124,9 +134,11 @@ def Run_Game():
 		Tetris_Game.screen.fill(pygame.Color(0, 0, 0))
 
 		#Draw Foo
-		#Draw_Foo()
+		Draw_Foo(Tetris_Game.screen, Tetris_Game.foo)
 		#Draw current Shape
-		pygame.draw.polygon(Tetris_Game.current_Shape.Surface, Tetris_Game.current_Shape.color, Tetris_Game.current_Shape.pointlist)
+		for coords in Tetris_Game.current_Shape.pointlist:
+			pygame.draw.rect(Tetris_Game.current_Shape.Surface, Tetris_Game.current_Shape.color, (coords[0], coords[1], 25, 25))
+		#pygame.draw.polygon(Tetris_Game.current_Shape.Surface, Tetris_Game.current_Shape.color, Tetris_Game.current_Shape.pointlist)
 		pygame.draw.line(Tetris_Game.screen, pygame.Color(0, 0, 255), (301, 0), (301, 600), 2)
 		msgSurfaceObj = fontObj.render('Score: '+str(Tetris_Game.score), False, pygame.Color(255, 255, 255))
 		msgRectObj = msgSurfaceObj.get_rect()
@@ -142,9 +154,10 @@ def Run_Game():
 
 		ticks = pygame.time.get_ticks()
 		if ticks % 40 == 0 and not Tetris_Game.paused:
-			if not Collision_Test(Tetris_Game.current_Shape.pointlist, 1, 600):
+			if not Collision_Test(Tetris_Game.current_Shape.pointlist, 1, 575):
 				Move_Game(Tetris_Game)
 			else:
+				Update_Foo(Tetris_Game.foo, Tetris_Game.current_Shape.pointlist, Tetris_Game.current_Shape.color)
 				Tetris_Game.current_Shape = New_Shape(Tetris_Game.shapes)
 
 		pygame.display.update()
